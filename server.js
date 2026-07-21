@@ -4,6 +4,8 @@ import cors from "cors";
 import { ChatGroq } from "@langchain/groq";
 import { generateSuggestions }
 from "./src/agents/suggestionGeneratorAgent.js";
+import { webSearchAgent }
+from "./src/agents/webSearchAgent.js";
 
 const app = express();
 
@@ -19,28 +21,49 @@ const llm = new ChatGroq({
 
 app.post("/api/chat", async (req, res) => {
   try {
-    const { prompt } = req.body;
 
-     const response = await llm.invoke(prompt);
+    const { prompt, mode } = req.body;
 
-     const suggestions =
-     await generateSuggestions(
-     prompt,
+    // WEB SEARCH MODE
+    if (mode === "web") {
+
+      const result = await webSearchAgent(
+        prompt,
+        llm
+      );
+
+      return res.json({
+        success: true,
+        answer: result.answer,
+        suggestions: [],
+        sources: result.sources
+      });
+
+    }
+
+    // WRITING MODE
+    const response = await llm.invoke(prompt);
+
+    const suggestions =
+      await generateSuggestions(
+        prompt,
         response.content,
         llm
-    );
+      );
 
     res.json({
-    success: true,
-    answer: response.content,
-    suggestions,
+      success: true,
+      answer: response.content,
+      suggestions,
     });
 
   } catch (error) {
+
     res.status(500).json({
       success: false,
       error: error.message,
     });
+
   }
 });
 

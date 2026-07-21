@@ -13,6 +13,9 @@ promptBox.addEventListener("keydown", (e) => {
 
 sendBtn.addEventListener("click", async () => {
 
+    const mode =
+    document.getElementById("mode").value;
+
     const prompt = promptBox.value.trim();
 
     if(!prompt) return;
@@ -37,7 +40,8 @@ sendBtn.addEventListener("click", async () => {
             "Content-Type":"application/json"
         },
         body: JSON.stringify({
-            prompt
+        prompt,
+        mode
         })
     });
 
