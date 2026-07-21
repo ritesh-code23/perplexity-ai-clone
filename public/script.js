@@ -46,12 +46,13 @@ sendBtn.addEventListener("click", async () => {
     });
 
     const data = await res.json();
+    console.log(data);
 
     aiDiv.innerHTML = `
     <div>${data.answer}</div>
     `;
 
-    if (data.suggestions?.length) {
+   if (data.suggestions?.length) {
 
     const suggestionsDiv =
         document.createElement("div");
@@ -81,6 +82,38 @@ sendBtn.addEventListener("click", async () => {
     });
 
     aiDiv.appendChild(suggestionsDiv);
+}
+
+    if (data.sources?.length) {
+
+    const sourcesDiv =
+        document.createElement("div");
+
+    sourcesDiv.style.marginTop = "15px";
+
+    sourcesDiv.innerHTML =
+        "<strong>Sources:</strong><br><br>";
+
+    data.sources.forEach((source) => {
+
+        const link =
+            document.createElement("a");
+
+        link.href = source.url;
+        link.target = "_blank";
+
+        link.textContent =
+            source.title || source.url;
+
+        link.style.display = "block";
+        link.style.margin = "8px 0";
+        link.style.color = "#60a5fa";
+
+        sourcesDiv.appendChild(link);
+
+    });
+
+    aiDiv.appendChild(sourcesDiv);
 }
 
     window.scrollTo({
