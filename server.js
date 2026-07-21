@@ -6,6 +6,8 @@ import { generateSuggestions }
 from "./src/agents/suggestionGeneratorAgent.js";
 import { webSearchAgent }
 from "./src/agents/webSearchAgent.js";
+import { redditSearchAgent }
+from "./src/agents/redditSearchAgent.js";
 
 const app = express();
 
@@ -40,6 +42,24 @@ app.post("/api/chat", async (req, res) => {
       });
 
     }
+    
+    // REDDIT SEARCH MODE
+    if (mode === "reddit") {
+
+    const result =
+        await redditSearchAgent(
+            prompt,
+            llm
+        );
+
+    return res.json({
+        success: true,
+        answer: result.answer,
+        suggestions: [],
+        sources: result.sources
+    });
+
+}
 
     // WRITING MODE
     const response = await llm.invoke(prompt);
