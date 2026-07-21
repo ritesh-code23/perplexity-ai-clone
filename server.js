@@ -8,6 +8,8 @@ import { webSearchAgent }
 from "./src/agents/webSearchAgent.js";
 import { redditSearchAgent }
 from "./src/agents/redditSearchAgent.js";
+import { youtubeSearchAgent }
+from "./src/agents/youtubeSearchAgent.js";
 
 const app = express();
 
@@ -42,6 +44,24 @@ app.post("/api/chat", async (req, res) => {
       });
 
     }
+
+    // YOUTUBE SEARCH MODE
+    if (mode === "youtube") {
+
+    const result =
+        await youtubeSearchAgent(
+            prompt,
+            llm
+        );
+
+    return res.json({
+        success: true,
+        answer: result.answer,
+        suggestions: [],
+        sources: result.sources
+    });
+
+}
     
     // REDDIT SEARCH MODE
     if (mode === "reddit") {

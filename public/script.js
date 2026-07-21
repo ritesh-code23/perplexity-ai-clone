@@ -96,22 +96,27 @@ sendBtn.addEventListener("click", async () => {
 
     data.sources.forEach((source) => {
 
-        const link =
-            document.createElement("a");
+    const link =
+        document.createElement("a");
 
-        link.href = source.url;
-        link.target = "_blank";
+    link.href = source.url;
+    link.target = "_blank";
 
+    if (mode === "youtube") {
+        link.textContent =
+            `▶️ Watch: ${source.title}`;
+    } else {
         link.textContent =
             source.title || source.url;
+    }
 
-        link.style.display = "block";
-        link.style.margin = "8px 0";
-        link.style.color = "#60a5fa";
+    link.style.display = "block";
+    link.style.margin = "8px 0";
+    link.style.color = "#60a5fa";
 
-        sourcesDiv.appendChild(link);
+    sourcesDiv.appendChild(link);
 
-    });
+});
 
     aiDiv.appendChild(sourcesDiv);
 }
