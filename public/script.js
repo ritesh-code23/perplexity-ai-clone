@@ -1,6 +1,79 @@
 const sendBtn = document.getElementById("sendBtn");
 const promptBox = document.getElementById("prompt");
 const chatContainer = document.getElementById("chatContainer");
+const clearBtn = document.getElementById("clearBtn");
+const welcomeScreen = document.getElementById("welcomeScreen");
+const plusBtn = document.getElementById("plusBtn");
+const featureMenu = document.getElementById("featureMenu");
+const modeButtons = document.querySelectorAll(".mode-btn");
+const featureItems = document.querySelectorAll(".feature-item");
+
+plusBtn.addEventListener("click", () => {
+
+    if (
+        featureMenu.style.display === "block"
+    ) {
+
+        featureMenu.style.display = "none";
+
+    } else {
+
+        featureMenu.style.display = "block";
+
+    }
+
+});
+
+featureItems.forEach((item) => {
+
+    item.addEventListener("click", () => {
+
+        featureItems.forEach((i) =>
+            i.classList.remove("active")
+        );
+
+        item.classList.add("active");
+
+        currentMode =
+            item.dataset.mode;
+
+        featureMenu.style.display =
+            "none";
+
+        console.log(
+            "Selected:",
+            currentMode
+        );
+
+    });
+
+});
+
+let currentMode = "writing";
+modeButtons.forEach((button) => {
+
+    button.addEventListener("click", () => {
+
+        modeButtons.forEach((btn) =>
+            btn.classList.remove("active")
+        );
+
+        button.classList.add("active");
+
+        currentMode =
+            button.dataset.mode;
+
+    });
+
+});
+
+    clearBtn.addEventListener("click", () => {
+
+        chatContainer.innerHTML = "";
+
+        welcomeScreen.style.display = "block";
+
+    });
 
 promptBox.addEventListener("keydown", (e) => {
 
@@ -11,119 +84,125 @@ promptBox.addEventListener("keydown", (e) => {
 
 });
 
-sendBtn.addEventListener("click", async () => {
+    sendBtn.addEventListener("click", async () => {
 
-    const mode =
-    document.getElementById("mode").value;
+        const mode = currentMode;
 
-    const prompt = promptBox.value.trim();
+        const prompt = promptBox.value.trim();
 
     if(!prompt) return;
 
-    const userDiv = document.createElement("div");
-    userDiv.className = "user-message";
-    userDiv.textContent = prompt;
+        welcomeScreen.style.display = "none";
 
-    chatContainer.appendChild(userDiv);
+        const userDiv = document.createElement("div");
+        userDiv.className = "user-message";
+        userDiv.textContent = prompt;
 
-    const aiDiv = document.createElement("div");
-    aiDiv.className = "ai-message";
-    aiDiv.textContent = "🤔 Thinking...";
+        chatContainer.appendChild(userDiv);
 
-    chatContainer.appendChild(aiDiv);
+        const aiDiv = document.createElement("div");
+        aiDiv.className = "ai-message";
+        aiDiv.textContent = "🤔 Thinking...";
 
-    promptBox.value = "";
+        chatContainer.appendChild(aiDiv);
 
-    const res = await fetch("/api/chat", {
-        method:"POST",
-        headers:{
-            "Content-Type":"application/json"
-        },
-        body: JSON.stringify({
-        prompt,
-        mode
-        })
-    });
+        promptBox.value = "";
 
-    const data = await res.json();
-    console.log(data);
+        const res = await fetch("/api/chat", {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({
+            prompt,
+            mode
+            })
+        });
 
-    aiDiv.innerHTML = `
-    <div>${data.answer}</div>
-    `;
+        const data = await res.json();
+        console.log(data);
 
-   if (data.suggestions?.length) {
+        aiDiv.innerHTML = `
+        <div>${data.answer}</div>
+        `;
 
-    const suggestionsDiv =
-        document.createElement("div");
+    if (data.suggestions?.length) {
 
-    suggestionsDiv.style.marginTop = "15px";
+        const suggestionsDiv =
+            document.createElement("div");
 
-    suggestionsDiv.innerHTML =
-        "<strong>Suggested Questions:</strong><br><br>";
+        suggestionsDiv.style.marginTop = "15px";
 
-    data.suggestions.forEach((suggestion) => {
+        suggestionsDiv.innerHTML =
+            "<strong>Suggested Questions:</strong><br><br>";
 
-        const btn =
-            document.createElement("button");
+        data.suggestions.forEach((suggestion) => {
 
-        btn.textContent = suggestion;
+            const btn =
+                document.createElement("button");
 
-        btn.style.display = "block";
-        btn.style.margin = "8px 0";
+            btn.textContent = suggestion;
 
-        btn.onclick = () => {
-            promptBox.value = suggestion;
-            sendBtn.click();
-        };
+            btn.style.display = "block";
+            btn.style.margin = "8px 0";
 
-        suggestionsDiv.appendChild(btn);
+            btn.onclick = () => {
+                promptBox.value = suggestion;
+                sendBtn.click();
+            };
 
-    });
+            suggestionsDiv.appendChild(btn);
 
-    aiDiv.appendChild(suggestionsDiv);
-}
+        });
 
-    if (data.sources?.length) {
-
-    const sourcesDiv =
-        document.createElement("div");
-
-    sourcesDiv.style.marginTop = "15px";
-
-    sourcesDiv.innerHTML =
-        "<strong>Sources:</strong><br><br>";
-
-    data.sources.forEach((source) => {
-
-    const link =
-        document.createElement("a");
-
-    link.href = source.url;
-    link.target = "_blank";
-
-    if (mode === "youtube") {
-        link.textContent =
-            `▶️ Watch: ${source.title}`;
-    } else {
-        link.textContent =
-            source.title || source.url;
+        aiDiv.appendChild(suggestionsDiv);
     }
 
-    link.style.display = "block";
-    link.style.margin = "8px 0";
-    link.style.color = "#60a5fa";
+        if (data.sources?.length) {
 
-    sourcesDiv.appendChild(link);
+        const sourcesDiv =
+            document.createElement("div");
 
-});
+        sourcesDiv.style.marginTop = "15px";
 
-    aiDiv.appendChild(sourcesDiv);
-}
+        sourcesDiv.innerHTML =
+            "<strong>Sources:</strong><br><br>";
+
+        data.sources.forEach((source) => {
+
+            const card =
+                document.createElement("a");
+
+            card.href = source.url;
+            card.target = "_blank";
+
+            card.className = "source-card";
+
+            card.innerHTML = `
+                <div class="source-title">
+                    ${
+                        mode === "youtube"
+                        ? "📺 " + (source.title || "Video").slice(0, 80)
+                        : source.title || "Source"
+                    }
+                </div>
+
+                <div class="source-url">
+                ${new URL(source.url).hostname}
+                </div>
+            `;
+
+            sourcesDiv.appendChild(card);
+
+        }); // closes forEach
+
+        aiDiv.appendChild(sourcesDiv);
+
+    } // closes if(data.sources?.length)
 
     window.scrollTo({
         top: document.body.scrollHeight,
         behavior:"smooth"
     });
 
-});
+    }); // closes sendBtn click handler

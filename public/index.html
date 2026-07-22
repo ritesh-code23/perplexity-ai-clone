@@ -10,40 +10,77 @@
 
         <h1>Perplexity Clone 🚀</h1>
 
+        <div id="welcomeScreen">
+            <h2>What do you want to learn today?</h2>
+
+            <p>
+                🌐 Search the web<br>
+                💬 Explore Reddit opinions<br>
+                📺 Find YouTube tutorials<br>
+                📝 Generate content
+            </p>
+        </div>
+
         <div id="chatContainer"></div>
 
         <div class="input-area">
 
-            <select id="mode">
-            <option value="writing">
-                Writing Assistant
-            </option>
+            <div class="chat-input">
 
-            <option value="web">
-                Web Search
-            </option>
+                <div class="plus-container">
 
-            <option value="reddit">
-                Reddit Search
-            </option>
+                    <button id="plusBtn">+</button>
 
-            <option value="youtube">
-                 YouTube Search
-            </option>
-        </select>
+                    <div id="featureMenu" class="feature-menu">
 
-            <textarea
-                id="prompt"
-                placeholder="Ask anything..."
-            ></textarea>
+                        <div class="feature-item"
+                            data-mode="writing">
+                            <h4>📝 Writing Assistant</h4>
+                            <p>Generate and improve content</p>
+                        </div>
 
-            <button id="sendBtn">
-                Send
-            </button>
+                        <div class="feature-item"
+                            data-mode="web">
+                            <h4>🌐 Web Search</h4>
+                            <p>Search the web in real time</p>
+                        </div>
+
+                        <div class="feature-item"
+                            data-mode="reddit">
+                            <h4>💬 Reddit Search</h4>
+                            <p>Find community opinions</p>
+                        </div>
+
+                        <div class="feature-item"
+                            data-mode="youtube">
+                            <h4>📺 YouTube Search</h4>
+                            <p>Find tutorials and videos</p>
+                        </div>
+
+                        <div class="feature-item"
+                            id="clearBtn">
+                            <h4>🗑 Clear Chat</h4>
+                            <p>Start a new conversation</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <textarea
+                    id="prompt"
+                    placeholder="Ask anything..."
+                ></textarea>
+
+                <button id="sendBtn">↑</button>
+
+            </div>
+
         </div>
 
     </div>
 
     <script src="script.js"></script>
+
 </body>
 </html>
